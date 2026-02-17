@@ -1,0 +1,31 @@
+<nav class="navbar">
+  <!-- Logo -->
+  <div class="navbar-brand">
+    <a routerLink="/" class="brand-link">🛒 FakeStore</a>
+  </div>
+
+  <!-- Enlaces centrales solo si está logueado -->
+  <div class="navbar-menu" *ngIf="auth.isAuthenticated()">
+    <a routerLink="/dashboard" class="nav-link">📊 Panel de Control</a>
+    <a routerLink="/products" class="nav-link">📦 Productos</a>
+  </div>
+
+  <!-- Zona usuario -->
+  <div *ngIf="auth.isAuthenticated()" class="user-section">
+    <div class="avatar" (click)="toggleMenu()">
+      <span class="avatar-icon">👤</span>
+      <span class="username">{{ user?.username }}</span>
+      <span class="dropdown-icon" [class.active]="showMenu">▼</span>
+    </div>
+
+    <div class="dropdown-menu" *ngIf="showMenu">
+      <div class="dropdown-header">
+        <div class="user-info">
+          <span class="info-item"><strong>Usuario:</strong> {{ user?.username }}</span>
+          <span class="info-item"><strong>Rol:</strong> {{ user?.role }}</span>
+        </div>
+      </div>
+      <button class="btn-logout" (click)="auth.logout()">🚪 Cerrar sesión</button>
+    </div>
+  </div>
+</nav>

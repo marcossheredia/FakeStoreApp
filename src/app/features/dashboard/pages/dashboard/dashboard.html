@@ -1,0 +1,95 @@
+<div class="dash">
+
+  <div class="dash-header">
+    <div>
+      <h1>Panel de Control</h1>
+      <p class="subtitle">
+        Hola, <strong>{{ username }}</strong> ({{ roleLabel }}) · {{ today | date:'fullDate' }}
+      </p>
+    </div>
+
+    <div class="status" [class.offline]="!apiOnline">
+      <span class="dot"></span>
+      <span>{{ statusLabel }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Cargando datos del panel...
+  </div>
+
+  <div *ngIf="!loading && errorMsg" class="error">
+    {{ errorMsg }}
+  </div>
+
+  <div *ngIf="!loading && !errorMsg">
+
+    <!-- KPI cards -->
+    <section class="cards">
+      <div class="card">
+        <div class="card-title">Total productos</div>
+        <div class="card-value">{{ totalProducts }}</div>
+        <div class="card-hint">Inventario disponible</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Precio medio</div>
+        <div class="card-value">{{ avgPrice | currency:'EUR':'symbol':'1.2-2' }}</div>
+        <div class="card-hint">Media de precios</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Categorías</div>
+        <div class="card-value">{{ categoriesTotal }}</div>
+        <div class="card-hint">Variedad de catálogo</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Más caro</div>
+        <div class="card-value">{{ mostExpensivePrice | currency:'EUR':'symbol':'1.2-2' }}</div>
+        <div class="card-hint truncate" title="{{ mostExpensiveName }}">{{ mostExpensiveName }}</div>
+      </div>
+    </section>
+
+    <!-- Widgets -->
+    <section class="grid">
+      <div class="panel">
+        <h2>Top categorías</h2>
+        <p class="panel-sub">Dónde se concentra el catálogo</p>
+
+        <div class="category-list">
+          <div class="category-item" *ngFor="let c of topCategories">
+            <div class="cat-name">{{ c.name }}</div>
+            <div class="cat-count">{{ c.count }} items</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Productos destacados</h2>
+        <p class="panel-sub">Top 5 por precio</p>
+
+        <div class="product-list">
+          <div class="product-item" *ngFor="let p of topProducts">
+            <div class="p-title truncate" title="{{ p.title }}">{{ p.title }}</div>
+            <div class="p-meta">
+              <span class="pill">{{ p.category }}</span>
+              <span class="price">{{ p.price | currency:'EUR':'symbol':'1.2-2' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Small “info” block -->
+    <section class="footer-note">
+      <h3>Resumen</h3>
+      <ul>
+        <li>Tu sesión está activa y el panel se actualiza al cargar.</li>
+        <li>Si la API falla, el panel muestra estado “Sin conexión”.</li>
+        <li>Las acciones de productos se gestionan en la sección de Productos (como querías).</li>
+      </ul>
+    </section>
+
+  </div>
+</div>

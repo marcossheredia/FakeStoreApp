@@ -1,0 +1,8 @@
+<p *ngIf="loading()">Cargando producto...</p>
+
+<div *ngIf="product() as p">
+  <h2>{{ p.title }}</h2>
+  <img [src]="p.image" width="200" />
+  <p>{{ p.description }}</p>
+  <p><strong>{{ p.price }} €</strong></p>
+</div>

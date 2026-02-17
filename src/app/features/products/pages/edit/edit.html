@@ -1,0 +1,49 @@
+<h2>Editar producto</h2>
+
+<form *ngIf="product">
+
+  <label>
+    Título:
+    <input
+      type="text"
+      [(ngModel)]="product.title"
+      name="title"
+    />
+  </label>
+
+  <br /><br />
+
+  <label>
+    Precio:
+    <input
+      type="number"
+      [(ngModel)]="product.price"
+      name="price"
+    />
+  </label>
+
+  <br /><br />
+
+  <label>
+    Descripción:
+    <textarea
+      [(ngModel)]="product.description"
+      name="description"
+    ></textarea>
+  </label>
+
+  <br /><br />
+
+  <button type="button" (click)="save()">
+    Guardar cambios
+  </button>
+
+  <button
+    type="button"
+    (click)="deleteProduct()"
+    style="margin-left: 10px; color: red;"
+  >
+    Eliminar producto
+  </button>
+
+</form>
