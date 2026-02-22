@@ -1,1 +1,37 @@
-<p>create works!</p>
+<div class="create-container">
+  <h1>Nuevo producto</h1>
+
+  <form (ngSubmit)="onCreate()">
+    <div>
+      <label>Título</label>
+      <input [(ngModel)]="title" name="title" required />
+    </div>
+
+    <div>
+      <label>Precio</label>
+      <input type="number" step="0.01" [(ngModel)]="price" name="price" required />
+    </div>
+
+    <div>
+      <label>Categoría</label>
+      <input [(ngModel)]="category" name="category" required />
+    </div>
+
+    <div>
+      <label>Descripción</label>
+      <textarea [(ngModel)]="description" name="description" required></textarea>
+    </div>
+
+    <div>
+      <label>URL Imagen (opcional)</label>
+      <input [(ngModel)]="image" name="image" />
+    </div>
+
+    <p class="error" *ngIf="error">{{ error }}</p>
+
+    <button type="submit" [disabled]="isLoading">
+      <span *ngIf="!isLoading">Crear</span>
+      <span *ngIf="isLoading">Creando...</span>
+    </button>
+  </form>
+</div>

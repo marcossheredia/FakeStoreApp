@@ -5,7 +5,8 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 
 interface LoginResponse {
-  token: string;
+  access_token: string;
+  refresh_token?: string;
 }
 
 @Injectable({
@@ -28,10 +29,10 @@ export class Auth {
     }
   }
 
-  login(username: string, password: string) {
+  login(email: string, password: string) {
     return this.http.post<LoginResponse>(
-      'https://fakestoreapi.com/auth/login',
-      { username, password }
+      `${environment.apiBase}/auth/login`,
+      { email, password }
     );
   }
 

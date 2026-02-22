@@ -46,7 +46,8 @@ export class Login {
       .subscribe({
         next: (res) => {
 
-          this.auth.saveToken(res.token, this.username);
+          // API escuelajs: access_token
+          this.auth.saveToken((res as any).access_token, this.username);
 
           const user = this.auth.getUser();
 
