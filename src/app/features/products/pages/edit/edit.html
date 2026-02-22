@@ -1,35 +1,24 @@
 <h2>Editar producto</h2>
 
-<form *ngIf="product">
+<form *ngIf="product" [formGroup]="form">
 
   <label>
     Título:
-    <input
-      type="text"
-      [(ngModel)]="product.title"
-      name="title"
-    />
+    <input type="text" formControlName="title" />
   </label>
 
   <br /><br />
 
   <label>
     Precio:
-    <input
-      type="number"
-      [(ngModel)]="product.price"
-      name="price"
-    />
+    <input type="number" formControlName="price" />
   </label>
 
   <br /><br />
 
   <label>
     Descripción:
-    <textarea
-      [(ngModel)]="product.description"
-      name="description"
-    ></textarea>
+    <textarea formControlName="description"></textarea>
   </label>
 
   <br /><br />

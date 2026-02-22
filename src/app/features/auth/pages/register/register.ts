@@ -1,60 +1,56 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { Auth } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
 export class Register {
 
-  name = '';
-  email = '';
-  password = '';
-  confirmPassword = '';
+  form;
   error = '';
   isLoading = false;
 
   constructor(
     private auth: Auth,
-    private router: Router
-  ) {}
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.form = this.fb.group({
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]]
+    }, { validators: this.passwordsMatch });
+  }
+
+  private passwordsMatch(group: AbstractControl): ValidationErrors | null {
+    const p = group.get('password')?.value;
+    const c = group.get('confirmPassword')?.value;
+    return p && c && p !== c ? { mismatch: true } : null;
+  }
 
   onRegister() {
 
     this.error = '';
-
-    if (!this.name || !this.email || !this.password || !this.confirmPassword) {
-      this.error = 'Todos los campos son obligatorios';
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
 
-    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-    if (!emailRegex.test(this.email)) {
-      this.error = 'El email no es válido';
-      return;
-    }
-
-    if (this.password.length < 6) {
-      this.error = 'La contraseña debe tener al menos 6 caracteres';
-      return;
-    }
-
-    if (this.password !== this.confirmPassword) {
-      this.error = 'Las contraseñas no coinciden';
-      return;
-    }
+    const { name, email, password } = this.form.value as { name: string; email: string; password: string };
 
     this.isLoading = true;
 
-    this.auth.register(this.name, this.email, this.password)
+    this.auth.register(name, email, password)
       .then((token) => {
-        this.auth.saveToken(token, this.email);
+        this.auth.saveToken(token, email);
         this.router.navigate(['/dashboard']);
       })
       .catch((e: any) => {

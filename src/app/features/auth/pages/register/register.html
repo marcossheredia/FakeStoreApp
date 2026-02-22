@@ -1,29 +1,26 @@
 <div class="auth-container">
   <h2>Crear cuenta</h2>
 
-  <form (ngSubmit)="onRegister()">
+  <form [formGroup]="form" (ngSubmit)="onRegister()">
 
     <input
       type="text"
       placeholder="Nombre"
-      [(ngModel)]="name"
-      name="name"
+      formControlName="name"
       required
     />
 
     <input
       type="email"
       placeholder="Email"
-      [(ngModel)]="email"
-      name="email"
+      formControlName="email"
       required
     />
 
     <input
       type="password"
       placeholder="Contraseña (mín. 6 caracteres)"
-      [(ngModel)]="password"
-      name="password"
+      formControlName="password"
       minlength="6"
       required
     />
@@ -31,8 +28,7 @@
     <input
       type="password"
       placeholder="Confirmar contraseña"
-      [(ngModel)]="confirmPassword"
-      name="confirmPassword"
+      formControlName="confirmPassword"
       required
     />
 

@@ -4,14 +4,15 @@
     <a routerLink="/" class="brand-link">🛒 FakeStore</a>
   </div>
 
-  <!-- Enlaces centrales solo si está logueado -->
-  <div class="navbar-menu" *ngIf="auth.isAuthenticated()">
+  <!-- Enlaces centrales -->
+  <div class="navbar-menu">
+    <a routerLink="/" class="nav-link">🏠 Inicio</a>
+    <a routerLink="/products" class="nav-link" *ngIf="auth.isAuthenticated()">📦 Productos</a>
     <a routerLink="/dashboard" class="nav-link">📊 Panel de Control</a>
-    <a routerLink="/products" class="nav-link">📦 Productos</a>
   </div>
 
-  <!-- Zona usuario -->
-  <div *ngIf="auth.isAuthenticated()" class="user-section">
+  <!-- Zona usuario autenticado -->
+  <div *ngIf="auth.isAuthenticated(); else guest" class="user-section">
     <div class="avatar" (click)="toggleMenu()">
       <span class="avatar-icon">👤</span>
       <span class="username">{{ user?.username }}</span>
@@ -28,4 +29,12 @@
       <button class="btn-logout" (click)="auth.logout()">🚪 Cerrar sesión</button>
     </div>
   </div>
+
+  <!-- Zona invitado -->
+  <ng-template #guest>
+    <div class="guest-actions">
+      <a routerLink="/auth/login" class="nav-link">Iniciar sesión</a>
+      <a routerLink="/auth/register" class="nav-link">Registrarse</a>
+    </div>
+  </ng-template>
 </nav>

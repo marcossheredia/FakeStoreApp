@@ -1,30 +1,30 @@
 <div class="create-container">
   <h1>Nuevo producto</h1>
 
-  <form (ngSubmit)="onCreate()">
+  <form [formGroup]="form" (ngSubmit)="onCreate()">
     <div>
       <label>Título</label>
-      <input [(ngModel)]="title" name="title" required />
+      <input formControlName="title" required />
     </div>
 
     <div>
       <label>Precio</label>
-      <input type="number" step="0.01" [(ngModel)]="price" name="price" required />
+      <input type="number" step="0.01" formControlName="price" required />
     </div>
 
     <div>
       <label>Categoría</label>
-      <input [(ngModel)]="category" name="category" required />
+      <input formControlName="category" required />
     </div>
 
     <div>
       <label>Descripción</label>
-      <textarea [(ngModel)]="description" name="description" required></textarea>
+      <textarea formControlName="description" required></textarea>
     </div>
 
     <div>
       <label>URL Imagen (opcional)</label>
-      <input [(ngModel)]="image" name="image" />
+      <input formControlName="image" />
     </div>
 
     <p class="error" *ngIf="error">{{ error }}</p>

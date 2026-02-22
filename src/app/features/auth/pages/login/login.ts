@@ -1,37 +1,49 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Auth } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
 export class Login {
-  username = '';
-  password = '';
+  form;
   error = '';
   isLoading = false;
 
   constructor(
     private auth: Auth,
-    private router: Router
-  ) {}
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.form = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]]
+    });
+  }
 
   onLogin() {
+    this.error = '';
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const email = this.form.get('email')!.value!;
+    const password = this.form.get('password')!.value!;
 
     // 🔥 Caso ADMIN local
-    if (this.username === 'admin@admin.com' && this.password === '123456') {
+    if (email === 'admin@admin.com' && password === '123456') {
 
       const fakeToken = 'admin-token-' + Math.random().toString(36).substring(2);
 
       localStorage.setItem('auth_token', fakeToken);
       localStorage.setItem('user', JSON.stringify({
-        username: this.username,
+        username: email,
         role: 'admin'
       }));
 
@@ -42,12 +54,12 @@ export class Login {
     }
 
     // 🔵 Login normal API
-    this.auth.login(this.username, this.password)
+    this.auth.login(email, password)
       .subscribe({
         next: (res) => {
 
           // API escuelajs: access_token
-          this.auth.saveToken((res as any).access_token, this.username);
+          this.auth.saveToken((res as any).access_token, email);
 
           const user = this.auth.getUser();
 

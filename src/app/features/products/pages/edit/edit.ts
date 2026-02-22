@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Products } from '../../services/products';
 import { Product } from '../../models/product';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './edit.html',
   styleUrl: './edit.scss',
 })
@@ -19,13 +19,23 @@ export class Edit implements OnInit {
 
   id!: number;
   product?: Product;
+  form;
 
   constructor(
     private route: ActivatedRoute,
     private products: Products,
     private cdr: ChangeDetectorRef,
-    private router: Router
-  ) {}
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.form = this.fb.group({
+      title: ['', [Validators.required]],
+      price: [0, [Validators.required]],
+      description: ['', [Validators.required]],
+      image: [''],
+      category: ['']
+    });
+  }
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -35,6 +45,13 @@ export class Edit implements OnInit {
 
       this.products.getById(this.id).subscribe(product => {
         this.product = product;
+        this.form.patchValue({
+          title: product.title,
+          price: product.price,
+          description: product.description,
+          image: product.image,
+          category: product.category
+        });
         this.cdr.detectChanges();
       });
     }
@@ -42,8 +59,17 @@ export class Edit implements OnInit {
 
   save() {
     if (!this.product) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
-    this.products.update(this.id, this.product).subscribe(() => {
+    const updated: Product = {
+      ...this.product!,
+      ...this.form.value as any
+    };
+
+    this.products.update(this.id, updated).subscribe(() => {
       console.log('Producto actualizado')
       this.router.navigate(['/products']);
 
