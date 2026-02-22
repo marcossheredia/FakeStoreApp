@@ -103,6 +103,8 @@ Aplicación Angular 21 que consume la API pública de Platzi Fake Store (Escuela
 - Usa https (la API ya lo usa) y Authorization: Bearer.
 - Limpia el token en logout.
 
+
+https://fake-store-app-teal.vercel.app/
 ## Mejoras futuras
 - Selector real de categorías (GET /categories y envío de categoryId).
 - Mensajes de éxito/error y toasts consistentes en CRUD.
