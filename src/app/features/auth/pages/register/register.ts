@@ -13,10 +13,12 @@ import { Auth } from '../../../../core/services/auth';
 })
 export class Register {
 
-  username = '';
+  name = '';
+  email = '';
   password = '';
   confirmPassword = '';
   error = '';
+  isLoading = false;
 
   constructor(
     private auth: Auth,
@@ -25,8 +27,21 @@ export class Register {
 
   onRegister() {
 
-    if (!this.username || !this.password) {
+    this.error = '';
+
+    if (!this.name || !this.email || !this.password || !this.confirmPassword) {
       this.error = 'Todos los campos son obligatorios';
+      return;
+    }
+
+    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (!emailRegex.test(this.email)) {
+      this.error = 'El email no es válido';
+      return;
+    }
+
+    if (this.password.length < 6) {
+      this.error = 'La contraseña debe tener al menos 6 caracteres';
       return;
     }
 
@@ -35,15 +50,19 @@ export class Register {
       return;
     }
 
-    try {
-      const token = this.auth.register(this.username, this.password);
+    this.isLoading = true;
 
-      this.auth.saveToken(token, this.username);
+    this.auth.register(this.name, this.email, this.password)
+      .then((token) => {
+        this.auth.saveToken(token, this.email);
+        this.router.navigate(['/dashboard']);
+      })
+      .catch((e: any) => {
+        this.error = e?.message ?? 'Error al registrar';
+      })
+      .finally(() => {
+        this.isLoading = false;
+      });
 
-      this.router.navigate(['/dashboard']);
-
-    } catch (e: any) {
-      this.error = e.message;
-    }
   }
 }
